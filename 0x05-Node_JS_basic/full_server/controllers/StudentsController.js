@@ -1,16 +1,13 @@
 import readDatabase from '../utils';
-import path from 'path';
 
 class StudentsController {
   static getAllStudents(request, response) {
-	  // Get the absolute path to the database.csv file using '__dirname'
-    const dbFilePath = path.join(__dirname, '..', 'database.csv');
-    readDatabase(dbFilePath)
+    readDatabase('./database.csv')
       .then((students) => {
         response.statusCode = 200;
         response.setHeader('Content-Type', 'text/plain');
         let res = 'This is the list of our students\n';
-        const fields = ['CS', 'SWE'];
+        const fields = Object.keys(students).sort((a, b) => a.localeCompare(b));
         fields.forEach((field) => {
           const firstNames = students[field];
           res += `Number of students in ${field}: ${firstNames.length}. List: ${firstNames.join(', ')}\n`;
@@ -33,7 +30,7 @@ class StudentsController {
       response.end('Major parameter must be CS or SWE');
       return;
     }
-    readDatabase(dbFilePath)
+    readDatabase('./database.csv')
       .then((students) => {
         response.statusCode = 200;
         response.setHeader('Content-Type', 'text/plain');
